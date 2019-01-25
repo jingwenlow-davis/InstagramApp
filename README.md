@@ -1,1 +1,35 @@
-# ECS165aInstagramClone
+# ECS165a Instagram Clone
+
+## Development
+### virtual env
+create virtual environment
+```
+virtual env -p python3 venv
+OR
+python3 -m virtualenv venv
+```
+
+install requirements our project uses
+```
+pip install -r requirements.txt
+```
+
+start virtual environment
+```
+source venv/bin/activate
+```
+
+should see `(venv)` show up in command prompt
+ 
+to exit virtual environment
+```
+deactivate
+```
+
+
+### start Django
+```
+python manage.py runserver
+```
+
+open up 127.0.0.1:8000
