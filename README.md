@@ -9,17 +9,18 @@ OR
 python3 -m virtualenv venv
 ```
 
-install requirements our project uses
-```
-pip install -r requirements.txt
-```
-
 start virtual environment
 ```
 source venv/bin/activate
 ```
 
 should see `(venv)` show up in command prompt
+
+install requirements our project uses
+```
+pip install -r requirements.txt
+```
+
  
 to exit virtual environment
 ```
@@ -33,3 +34,4 @@ python manage.py runserver
 ```
 
 open [127.0.0.1:8000](127.0.0.1:8000)
+
