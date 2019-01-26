@@ -29,11 +29,17 @@ deactivate
 
 
 ### start Django
+Make sure to be in backend folder
 ```
 python manage.py runserver
 ```
 open [127.0.0.1:8000](127.0.0.1:8000)
 
+set up database (do this whenever changes made to model)
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 #### Admin
-username: admin
+username: admin\
 password: pw
