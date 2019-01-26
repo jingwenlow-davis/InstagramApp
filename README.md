@@ -21,7 +21,7 @@ install requirements our project uses
 pip install -r requirements.txt
 ```
 
- 
+
 to exit virtual environment
 ```
 deactivate
@@ -32,6 +32,8 @@ deactivate
 ```
 python manage.py runserver
 ```
-
 open [127.0.0.1:8000](127.0.0.1:8000)
 
+#### Admin
+username: admin
+password: pw
