@@ -1,13 +1,10 @@
 import React from 'react';
 import {
-  ActivityIndicator,
   AsyncStorage,
   Button,
-  StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
-import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 
 
 export default class SignInScreen extends React.Component {
