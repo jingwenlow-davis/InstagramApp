@@ -9,7 +9,7 @@ export default class AssetExample extends React.Component {
 
   componentDidMount(){
     // https://facebook.github.io/react-native/movies.json
-    return fetch('/api/users/')
+    return fetch('https://odd-puma-51.localtunnel.me/api/users/')
       .then((response) => response.json())
       .then((responseJson) => {
 
