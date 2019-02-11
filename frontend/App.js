@@ -1,12 +1,20 @@
 import React from 'react';
-import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 import HomeScreen from './screens/Home';
-import OtherScreen from './screens/Other';
+import ExploreScreen from './screens/Explore';
+import ProfileScreen from './screens/Profile';
+import MessagesScreen from './screens/Messages';
 import SignInScreen from './screens/SignIn';
 import AuthLoadingScreen from './screens/auth';
 
 
-const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
+const AppStack = createBottomTabNavigator(
+  {
+    Home: HomeScreen,
+    Explore: ExploreScreen,
+    Messages: MessagesScreen,
+    Profile: ProfileScreen
+  });
 const AuthStack = createStackNavigator({ SignIn: SignInScreen });
 
 export default createAppContainer(createSwitchNavigator(

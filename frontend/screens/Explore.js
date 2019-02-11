@@ -1,31 +1,28 @@
 import React from 'react';
 import {
-  AsyncStorage,
   Button,
   StatusBar,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 
 
-export default class OtherScreen extends React.Component {
+export default class ExploreScreen extends React.Component {
   static navigationOptions = {
-    title: 'Lots of features here',
+    title: 'Explore',
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Button title="I'm done, sign me out" onPress={this._signOutAsync} />
-        <StatusBar barStyle="default" />
+        <Text>
+          Explore will go here.
+        </Text>
       </View>
     );
   }
 
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
 }
 
 const styles = StyleSheet.create({

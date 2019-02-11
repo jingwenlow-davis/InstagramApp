@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  AsyncStorage,
   Button,
   StyleSheet,
   Text,
@@ -8,24 +7,21 @@ import {
 } from 'react-native';
 
 
-export default class HomeScreen extends React.Component {
+export default class MessagesScreen extends React.Component {
   static navigationOptions = {
-    title: 'Home',
+    title: 'Messages',
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>Home</Text>
-        <Button title="Sign Out" onPress={this._signOutAsync} />
+        <Text>
+          Messages will go here.
+        </Text>
       </View>
     );
   }
 
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
 }
 
 const styles = StyleSheet.create({
