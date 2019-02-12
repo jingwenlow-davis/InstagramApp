@@ -25,7 +25,7 @@ SECRET_KEY = '4v=_mz6w%$y)52hxb_%=g)dew4kcq=ia9sgr@4r)7h58gsga^$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','odd-puma-51.localtunnel.me']
+ALLOWED_HOSTS = ['127.0.0.1','0.0.0.0','tricky-horse-18.localtunnel.me']
 
 AUTH_USER_MODEL = 'api.User'
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

@@ -7,18 +7,70 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import axios from 'axios';
+import Cookies from "universal-cookie";
 
 
-export const _signInAsync = async (navigation) => {
-  await AsyncStorage.setItem('userToken', 'abc');
-  navigation.navigate('App');
+var axiosInst = axios.create({
+  baseURL: 'https://giant-rat-34.localtunnel/',
+  timeout: 1000,
+  // headers: {'X-Custom-Header': 'foobar'}
+});
+
+
+export const _signInAsync = async (navigation, data) => {
+  const user = data.getValue();
+  console.log("val",user);
+
+  const config = {
+    auth: {
+      username: user.username,
+      password: user.password
+    }
+  }
+
+  axiosInst.post('api-token-auth/', config)
+    .then(async function (response) {
+      console.log(response.status) // User Data
+      if (response.status === 200) {
+        await AsyncStorage.setItem('userToken', response.data.token);
+        navigation.navigate('App');
+      } else {
+        throw new Error('Something went wrong on api server!');
+      }
+    });
 };
 
 export const _signUpAsync = async (navigation, data) => {
-  const value = data.getValue();
-  alert(value.email);
-  await AsyncStorage.setItem('userToken', 'abc');
-  navigation.navigate('App');
+  const user = data.getValue();
+  alert(user.email);
+
+  const config = {
+    headers: {
+      "Authorization": `Token ffd76aeb75391899390f037e1b820d0454a9ae03`,
+      'X-CSRFToken': Cookies.get('csrftoken'),
+      'Content-Type': 'application/json'
+    },
+    data: {
+      "email": user.email,
+      "first_name": user.first_name,
+      "last_name": user.last_name,
+      "username": user.username,
+      "password": user.password,
+    }
+  };
+
+  axiosInst.post('api/login/', config)
+    .then(async function (response) {
+      console.log(response.status);
+
+      if (response.status === 200) {
+        await AsyncStorage.setItem('userToken', response.data.token);
+        navigation.navigate('App');
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    });
 };
 
 export const _signOutAsync = async (navigation) => {

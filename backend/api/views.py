@@ -16,18 +16,41 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
 
-class LoginUser(View):
 
+class SignUpUser(View):
     def post(self, request):
+        print("Signup")
+        email = request.POST['email']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
         username = request.POST['username']
         password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
 
-        # user found
-        if user is not None:
-            login(request, user)
-            return HttpResponse(status=204)
+        # check username/email etc isnt taken
 
-        # user not found
-        else:
-            return HttpResponseBadRequest
+        # if all good, create new user
+
+        # else return the error
+
+        return HttpResponse(status=204)
+
+
+
+#
+# class LoginUser(View):
+#     def post(self, request):
+#         print("WOWOW")
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         user = authenticate(request, email=email, password=password)
+#
+#         # user found
+#         if user is not None:
+#             print("FOUND YAAY")
+#             login(request, user)
+#             return HttpResponse(status=204)
+#
+#         # user not found
+#         else:
+#             print("DRATS")
+#             return HttpResponseBadRequest
