@@ -9,6 +9,25 @@ import {
 } from 'react-native';
 
 
+export const _signInAsync = async (navigation) => {
+  await AsyncStorage.setItem('userToken', 'abc');
+  navigation.navigate('App');
+};
+
+export const _signUpAsync = async (navigation, data) => {
+  const value = data.getValue();
+  alert(value.email);
+  await AsyncStorage.setItem('userToken', 'abc');
+  navigation.navigate('App');
+};
+
+export const _signOutAsync = async (navigation) => {
+  await AsyncStorage.clear();
+  navigation.navigate('Auth');
+};
+
+
+// Decide if user is logged in or not App or Auth screen is showed
 export default class AuthLoadingScreen extends React.Component {
   constructor() {
     super();

@@ -4,8 +4,17 @@ import HomeScreen from './screens/Home';
 import ExploreScreen from './screens/Explore';
 import ProfileScreen from './screens/Profile';
 import MessagesScreen from './screens/Messages';
+import SettingsScreen from './screens/Settings';
 import SignInScreen from './screens/SignIn';
+import SignUpScreen from './screens/SignUp';
 import AuthLoadingScreen from './screens/auth';
+
+
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfileScreen,
+    Settings: SettingsScreen
+  });
 
 
 const AppStack = createBottomTabNavigator(
@@ -13,9 +22,13 @@ const AppStack = createBottomTabNavigator(
     Home: HomeScreen,
     Explore: ExploreScreen,
     Messages: MessagesScreen,
-    Profile: ProfileScreen
+    Profile: ProfileStack
   });
-const AuthStack = createStackNavigator({ SignIn: SignInScreen });
+const AuthStack = createBottomTabNavigator(
+  {
+    SignIn: SignInScreen,
+    SignUp: SignUpScreen
+  });
 
 export default createAppContainer(createSwitchNavigator(
   {

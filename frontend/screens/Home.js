@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-
+import {_signOutAsync} from './auth.js';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -17,15 +17,13 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Home</Text>
-        <Button title="Sign Out" onPress={this._signOutAsync} />
+        <Button
+          title="Sign Out"
+          onPress={() => _signOutAsync(this.props.navigation)}
+        />
       </View>
     );
   }
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
 }
 
 const styles = StyleSheet.create({
