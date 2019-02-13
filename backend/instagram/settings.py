@@ -25,7 +25,7 @@ SECRET_KEY = '4v=_mz6w%$y)52hxb_%=g)dew4kcq=ia9sgr@4r)7h58gsga^$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','0.0.0.0','tricky-horse-18.localtunnel.me']
+ALLOWED_HOSTS = ['127.0.0.1','tricky-horse-18.localtunnel.me']
 
 AUTH_USER_MODEL = 'api.User'
 

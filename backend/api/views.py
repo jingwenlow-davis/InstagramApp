@@ -24,9 +24,28 @@ class SignUpUser(View):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         username = request.POST['username']
+        gender = request.POST['gender']
         password = request.POST['password']
 
-        # check username/email etc isnt taken
+        # check it email is taken
+        if User.objects.filter(email=email).exists():
+            response = HttpResponse()
+            response.content("Email is taken")
+            response.status_code(400)
+            return response
+
+        # check if username is taken
+        else if User.objects.filter(email=email).exists():
+            
+            user = User.objects.create_user(
+                email = email,
+                first_name = first_name,
+                last_name = last_name,
+                username = username,
+                gender = gender,
+                password = password
+            )
+
 
         # if all good, create new user
 
@@ -35,6 +54,17 @@ class SignUpUser(View):
         return HttpResponse(status=204)
 
 
+class UpdateSettings(View):
+    def post(self, request):
+        print("Signup")
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        email = request.POST['email']
+        gender = request.POST['']
+        password = request.POST['password']
+
+        return HttpResponse(status=204)
 
 #
 # class LoginUser(View):

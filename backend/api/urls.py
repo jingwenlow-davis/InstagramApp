@@ -25,4 +25,5 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     path('signup/', SignUpUser.as_view(), name='signup'),
+    path('updatesettings/', UpdateSettings.as_view(), name='updatesettings'),
 ]
