@@ -3,13 +3,19 @@
   "version": "0.0.0",
   "description": "No description",
   "author": null,
-  "private": true,
+  "private": false,
   "main": "node_modules/expo/AppEntry.js",
   "dependencies": {
+    "axios": "^0.18.0",
     "expo": "^32.0.0",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-elements": "^1.0.0",
     "react-native-paper": "2.2.8",
-    "react-navigation": "3.0.9"
-  }
+    "react-native-vector-icons": "^6.2.0",
+    "react-navigation": "^3.2.1",
+    "tcomb-form-native": "^0.6.20"
+  },
+  "repository": "https://github.com/julianwilkinson/ECS165aInstagramClone.git",
+  "license": "MIT"
 }
