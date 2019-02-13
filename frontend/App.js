@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator, createBottomTabNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 import HomeScreen from './screens/Home';
 import ExploreScreen from './screens/Explore';
+import AddScreen from './screens/Add';
 import ProfileScreen from './screens/Profile';
 import MessagesScreen from './screens/Messages';
 import SettingsScreen from './screens/Settings';
@@ -21,14 +22,17 @@ const AppStack = createBottomTabNavigator(
   {
     Home: HomeScreen,
     Explore: ExploreScreen,
+    Add: AddScreen,
     Messages: MessagesScreen,
     Profile: ProfileStack
   });
+
 const AuthStack = createBottomTabNavigator(
   {
     SignIn: SignInScreen,
     SignUp: SignUpScreen
   });
+
 
 export default createAppContainer(createSwitchNavigator(
   {

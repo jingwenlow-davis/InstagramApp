@@ -7,73 +7,90 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import axios from 'axios';
 import Cookies from "universal-cookie";
-
-
-var axiosInst = axios.create({
-  baseURL: 'https://giant-rat-34.localtunnel/',
-  timeout: 1000,
-  // headers: {'X-Custom-Header': 'foobar'}
-});
 
 
 export const _signInAsync = async (navigation, data) => {
   const user = data.getValue();
   console.log("val",user);
 
-  const config = {
-    auth: {
-      username: user.username,
-      password: user.password
-    }
-  }
-
-  axiosInst.post('api-token-auth/', config)
-    .then(async function (response) {
-      console.log(response.status) // User Data
-      if (response.status === 200) {
-        await AsyncStorage.setItem('userToken', response.data.token);
-        navigation.navigate('App');
-      } else {
-        throw new Error('Something went wrong on api server!');
-      }
+  fetch('https://lazy-grasshopper-65.localtunnel.me/api-token-auth/', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "username": user.username,
+      "password": user.password
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (responseJson) => {
+      console.log("data: ",responseJson) // User Data
+      await AsyncStorage.setItem('userToken', responseJson.token);
+      navigation.navigate('App');
+    })
+    .catch(function (error) {
+      console.log(error);
     });
+
 };
 
 export const _signUpAsync = async (navigation, data) => {
   const user = data.getValue();
-  alert(user.email);
+  const userToken = await AsyncStorage.getItem('userToken');
 
-  const config = {
+  fetch('https://lazy-grasshopper-65.localtunnel.me/api-token-auth/', {
+    method: 'POST',
     headers: {
-      "Authorization": `Token ffd76aeb75391899390f037e1b820d0454a9ae03`,
-      'X-CSRFToken': Cookies.get('csrftoken'),
-      'Content-Type': 'application/json'
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + userToken
     },
-    data: {
+    body: JSON.stringify({
       "email": user.email,
       "first_name": user.first_name,
       "last_name": user.last_name,
       "username": user.username,
-      "password": user.password,
-    }
-  };
-
-  axiosInst.post('api/login/', config)
-    .then(async function (response) {
-      console.log(response.status);
-
-      if (response.status === 200) {
-        await AsyncStorage.setItem('userToken', response.data.token);
-        navigation.navigate('App');
-      } else {
-        throw new Error('Invalid credentials');
-      }
+      "gender": user.gender,
+      "password": user.password
+    }),
+  })
+    .then((response) => response.json())
+    .then(async (responseJson) => {
+      console.log("data: ",responseJson) // User Data
+      await AsyncStorage.setItem('userToken', responseJson.token);
+      navigation.navigate('App');
+    })
+    .catch(function (error) {
+      console.log(error);
     });
+  // const config = {
+  //   headers: {
+  //     "Authorization": `Token ffd76aeb75391899390f037e1b820d0454a9ae03`,
+  //     'X-CSRFToken': Cookies.get('csrftoken'),
+  //     'Content-Type': 'application/json'
+  //   },
+  //   data: {}
+  // };
+
+  // axiosInst.post('api/login/', config)
+  //   .then(async function (response) {
+  //     console.log(response.status);
+
+  //     if (response.status === 200) {
+  //       await AsyncStorage.setItem('userToken', response.data.token);
+  //       navigation.navigate('App');
+  //     } else {
+  //       throw new Error('Invalid credentials');
+  //     }
+  //   });
 };
 
 export const _signOutAsync = async (navigation) => {
+  // console.log(Cookies.get('csrftoken'))
+  // console.log("SDF")
   await AsyncStorage.clear();
   navigation.navigate('Auth');
 };

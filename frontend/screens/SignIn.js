@@ -1,47 +1,40 @@
-import React from "react";
+import React from 'react';
 import {
   AsyncStorage,
   Button,
   StyleSheet,
-  View,
+  ScrollView,
 } from 'react-native';
-import { Card, FormLabel, FormInput } from "react-native-elements";
-import {_signInAsync, _signUpAsync} from './auth.js'
+import {_signInAsync, _signIn} from './auth.js'
 import t from 'tcomb-form-native';
 
 const Form = t.form.Form;
 
 const User = t.struct({
-  email: t.String,
-  first_name: t.String,
-  last_name: t.String,
   username: t.String,
   password: t.String,
 });
 
 
-export default class SignUpScreen extends React.Component {
+export default class SignInScreen extends React.Component {
   static navigationOptions = {
-    title: 'Sign Up'
+    title: 'Sign in'
   };
 
   render() {
-    return(
-      <View style={styles.container}>
+    return (
+      <ScrollView style={styles.container}>
         <Form
           ref={c => this._form = c}
           type={User}
         />
         <Button
-          title="Sign Up!"
-          onPress={() => _signUpAsync(this.props.navigation, this._form)}
-        />
-      </View>
+          title="Sign in!"
+          onPress={() => _signInAsync(this.props.navigation, this._form)} />
+      </ScrollView>
     );
   }
-
 }
-
 
 const styles = StyleSheet.create({
   container: {

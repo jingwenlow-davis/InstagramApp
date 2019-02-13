@@ -15,6 +15,8 @@ const User = t.struct({
   email: t.String,
   first_name: t.String,
   last_name: t.String,
+  username: t.String,
+  gender: t.String,
   password: t.String,
 });
 
