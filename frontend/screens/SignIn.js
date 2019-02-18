@@ -30,7 +30,7 @@ export default class SignInScreen extends React.Component {
         />
         <Button
           title="Sign in!"
-          onPress={() => _signInAsync(this.props.navigation, this._form)} />
+          onPress={() => _signInAsync(this.props.navigation, this._form)}         />
       </ScrollView>
     );
   }

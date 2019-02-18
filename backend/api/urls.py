@@ -19,12 +19,13 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, 'users')
-# router.register(r'updatesettings', UpdateSettings, 'updatesettings')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
+    path('login/', LoginUser.as_view(), name='login'),
     path('signup/', SignUpUser.as_view(), name='signup'),
     path('updatesettings/', UpdateSettings.as_view(), name='updatesettings'),
+    path('createpost/', CreatePost.as_view(), name='createpost'),
 ]

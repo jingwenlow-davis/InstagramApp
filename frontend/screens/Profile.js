@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  ActivityIndicator,
+  AsyncStorage,
   StyleSheet,
   Button,
   Text,
@@ -7,6 +9,7 @@ import {
 } from 'react-native';
 import {Header} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Expo from 'expo-server-sdk';
 
 
 
@@ -34,13 +37,49 @@ export default class ProfileScreen extends React.Component {
   };
 
 
+ constructor(props){
+    super(props);
+    this.state ={ isLoading: true }
+  }
+
+
+
+async componentDidMount(){
+  const userToken = await AsyncStorage.getItem('userToken');
+
+  fetch(Expo.Constants.manifest.extra.url + 'api/users/', {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Token ' + userToken,
+      // 'X-CSRFToken': csrfToken
+    }
+  }).then((response) => response.json())
+    .then((responseJson) => {
+      this.setState({
+        isLoading: false,
+        user: responseJson,
+      }, function(){});
+    })
+    .catch((error) =>{
+      console.error(error);
+    });
+}
+
   render() {
+    if(this.state.isLoading){
+      return(
+        <View style={{flex: 1, padding: 20}}>
+          <ActivityIndicator/>
+        </View>
+      )
+    }
+
     return (
       <View style={styles.container}>
 
-        <Text>
-          Profile will go here.
-        </Text>
+        <Text>Profile will go here.</Text>
 
         <Button title="Go to settings" onPress={this._settings} />
 
@@ -54,6 +93,14 @@ export default class ProfileScreen extends React.Component {
 
 
 }
+
+
+
+        // <Text>Username: {this.state.user[0].username}</Text>
+        // <Text>First Name: {this.state.user[0].first_name}</Text>
+        // <Text>Last Name: {this.state.user[0].last_name}</Text>
+        // <Text>Email: {this.state.user[0].email}</Text>
+        // <Text>Gender: {this.state.user[0].gender}</Text>
 
 const styles = StyleSheet.create({
   container: {

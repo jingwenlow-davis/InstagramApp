@@ -1,8 +1,10 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Button, Text, View } from 'react-native';
 import Cookies from 'universal-cookie';
+import Expo from 'expo-server-sdk';
 // import CookieManager from 'react-native-cookies';
 import t from 'tcomb-form-native';
+
 
 const Form = t.form.Form;
 
@@ -53,7 +55,7 @@ export default class SettingsScreen extends React.Component {
     // }
 
 
-    fetch('https://lazy-grasshopper-65.localtunnel.me/api/updatesettings/', {
+    fetch(Expo.Constants.manifest.extra.url + 'api/updatesettings/', {
       method: 'POST',
       credentials: 'include',
       headers: {

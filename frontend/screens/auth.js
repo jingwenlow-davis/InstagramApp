@@ -8,13 +8,15 @@ import {
   View,
 } from 'react-native';
 import Cookies from "universal-cookie";
-
+// import Expo from 'expo-server-sdk';
+// import {Constants} from 'expo';
+import * as Expo from 'expo'
 
 export const _signInAsync = async (navigation, data) => {
   const user = data.getValue();
   console.log("val",user);
 
-  fetch('https://lazy-grasshopper-65.localtunnel.me/api-token-auth/', {
+  fetch('https://curly-seahorse-73.localtunnel.me/api-token-auth/', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -25,7 +27,13 @@ export const _signInAsync = async (navigation, data) => {
       "password": user.password
     }),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if(response.status != 200){
+        // TODO use non_field_errors
+        alert("Unable to log in with provided credentials.")
+      }
+      return response.json()
+    })
     .then(async (responseJson) => {
       console.log("data: ",responseJson) // User Data
       await AsyncStorage.setItem('userToken', responseJson.token);
@@ -41,12 +49,11 @@ export const _signUpAsync = async (navigation, data) => {
   const user = data.getValue();
   const userToken = await AsyncStorage.getItem('userToken');
 
-  fetch('https://lazy-grasshopper-65.localtunnel.me/api-token-auth/', {
+  fetch(Expo.Constants.manifest.extra.url + '/api/signup/', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': 'Token ' + userToken
     },
     body: JSON.stringify({
       "email": user.email,
@@ -66,31 +73,9 @@ export const _signUpAsync = async (navigation, data) => {
     .catch(function (error) {
       console.log(error);
     });
-  // const config = {
-  //   headers: {
-  //     "Authorization": `Token ffd76aeb75391899390f037e1b820d0454a9ae03`,
-  //     'X-CSRFToken': Cookies.get('csrftoken'),
-  //     'Content-Type': 'application/json'
-  //   },
-  //   data: {}
-  // };
-
-  // axiosInst.post('api/login/', config)
-  //   .then(async function (response) {
-  //     console.log(response.status);
-
-  //     if (response.status === 200) {
-  //       await AsyncStorage.setItem('userToken', response.data.token);
-  //       navigation.navigate('App');
-  //     } else {
-  //       throw new Error('Invalid credentials');
-  //     }
-  //   });
 };
 
 export const _signOutAsync = async (navigation) => {
-  // console.log(Cookies.get('csrftoken'))
-  // console.log("SDF")
   await AsyncStorage.clear();
   navigation.navigate('Auth');
 };
