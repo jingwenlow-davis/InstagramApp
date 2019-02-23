@@ -47,7 +47,7 @@ export default class ProfileScreen extends React.Component {
 async componentDidMount(){
   const userToken = await AsyncStorage.getItem('userToken');
 
-  fetch(Expo.Constants.manifest.extra.url + 'api/users/', {
+  fetch('https://rude-bird-15.localtunnel.me/api/users/currentuser/', {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -57,6 +57,7 @@ async componentDidMount(){
     }
   }).then((response) => response.json())
     .then((responseJson) => {
+      console.log(responseJson)
       this.setState({
         isLoading: false,
         user: responseJson,
@@ -80,7 +81,11 @@ async componentDidMount(){
       <View style={styles.container}>
 
         <Text>Profile will go here.</Text>
-
+        <Text>Username: {this.state.user[0].model}</Text>
+        <Text>First Name: {this.state.user[0].first_name}</Text>
+        <Text>Last Name: {this.state.user[0].last_name}</Text>
+        <Text>Email: {this.state.user[0].email}</Text>
+        <Text>Gender: {this.state.user[0].gender}</Text>
         <Button title="Go to settings" onPress={this._settings} />
 
       </View>

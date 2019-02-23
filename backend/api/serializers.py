@@ -13,3 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
             'date_joined',
             'last_login'
         )
+
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            # TODO
+        )

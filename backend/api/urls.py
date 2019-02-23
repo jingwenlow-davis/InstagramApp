@@ -19,6 +19,7 @@ from .views import *
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, 'users')
+router.register(r'posts', PostViewSet, 'posts')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -27,5 +28,4 @@ urlpatterns = [
     path('login/', LoginUser.as_view(), name='login'),
     path('signup/', SignUpUser.as_view(), name='signup'),
     path('updatesettings/', UpdateSettings.as_view(), name='updatesettings'),
-    path('createpost/', CreatePost.as_view(), name='createpost'),
 ]

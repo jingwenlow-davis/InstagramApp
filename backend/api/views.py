@@ -1,13 +1,11 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views import View
 from django.contrib.auth import authenticate, login, logout
+from django.core import serializers
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -21,6 +19,8 @@ from .models import *
 from .serializers import *
 
 import json
+from django.core import serializers
+
 
 # All Users
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,6 +29,18 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+
+    @action(detail=False)
+    def currentuser(self, request):
+        '''
+        Get current user's info
+        '''
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+        user = User.objects.filter(pk=user.pk)
+        serializer = serializers.serialize('json', user)
+        return Response(serializer)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -119,10 +131,54 @@ class UpdateSettings(APIView):
 
 
 
-@method_decorator(csrf_exempt, name='dispatch')
-class CreatePost(APIView):
 
-    def post(self, request):
-        # TODO receive picture
 
-        return Response(status=HTTP_200_OK)
+# All Posts
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Post.objects.all().order_by('-date_created')
+    serializer_class = PostSerializer
+
+    @action(detail=False)
+    def createpost(self, request):
+        '''
+        Create current user's post
+        '''
+        # find current user based on token
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        # TODO: querry, serialize querry
+        # serializer = serializers.serialize('json', user)
+        return Response(serializer)
+
+    @action(detail=False)
+    def getfeed(self, request):
+        '''
+        Get current user's feed
+        '''
+        # find current user based on token
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        # TODO: querry, serialize querry
+        # serializer = serializers.serialize('json', user)
+        return Response(serializer)
+
+    @action(detail=False)
+    def getuserposts(self, request):
+        '''
+        Get all current user's posts
+        '''
+        # find current user based on token
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        # TODO: querry, serialize querry
+        # serializer = serializers.serialize('json', user)
+        return Response(serializer)
