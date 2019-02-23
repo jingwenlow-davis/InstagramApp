@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {Header} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Expo from 'expo-server-sdk';
 
 
 
