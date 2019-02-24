@@ -43,3 +43,8 @@ python manage.py migrate
 #### Admin
 username: admin\
 password: pw
+
+
+### account details for snack ###
+username: shraddha55\
+Password: ECS165PrettyNear
