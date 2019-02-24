@@ -77,14 +77,27 @@ WSGI_APPLICATION = 'instagram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+import pymysql  # noqa: 402
+pymysql.install_as_MySQLdb()
 
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.mysql',
+		'HOST': '/cloudsql/pretty-near-ecs-165a:us-west1:pneardb',
+		'USER': 'django',
+		'PASSWORD': 'unchained',
+		'NAME': 'pneardb_main',
+	}
+}
 
 # [START db_setup]
+import pymysql  # noqa: 402
+pymysql.install_as_MySQLdb()
 if os.getenv('GAE_APPLICATION', None):
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
-    import pymysql  # noqa: 402
-    pymysql.install_as_MySQLdb()
+    # import pymysql  # noqa: 402
+    # pymysql.install_as_MySQLdb()
 
     DATABASES = {
         'default': {
@@ -96,28 +109,39 @@ if os.getenv('GAE_APPLICATION', None):
         }
     }
 else:
-    # Running locally so connect to either a local MySQL instance or connect to
+	# Running locally so connect to either a local MySQL instance or connect to
     # Cloud SQL via the proxy. To start the proxy via command line:
-    #
-    #     $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
-    #
+	#
+        # $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
+
     # See https://cloud.google.com/sql/docs/mysql-connect-proxy
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.mysql',
-    #         'HOST': '127.0.0.1',
-    #         'PORT': '3306',
-    #         'NAME': '[LOCAL DB NAME]',
-    #         'USER': '[USER]',
-    #         'PASSWORD': '[PASSWORD]',
-    #     }
-    # }
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+
+	DATABASES = {
+        # 'default': {
+        #     'ENGINE': 'django.db.backends.mysql',
+        #     'HOST': '127.0.0.1',
+        #     'PORT': '3306',
+        #     'NAME': '[LOCAL DB NAME]',
+        #     'USER': '[USER]',
+        #     'PASSWORD': '[PASSWORD]',
+        # }
+		'default': {
+            'ENGINE': 'django.db.backends.mysql',
+			'NAME': 'pneardb_main',
+            'HOST': 'localhost',
+            'USER': 'django',
+            'PASSWORD': 'unchained',
+            'NAME': 'pneardb_main',
+			'PORT': '3306'
         }
     }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    #     }
+    # }
 
 # [END db_setup]
 
