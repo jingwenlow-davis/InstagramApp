@@ -43,7 +43,7 @@ class Post(models.Model):
 	posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	
 	date_created = models.DateTimeField(default=datetime.now)
-	image = models.ImageField(upload_to='static/images')
+	image = models.ImageField(upload_to='staticfiles')
 	caption = models.TextField(max_length=500, blank=False)
 
 	def __str__(self):
