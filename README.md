@@ -45,6 +45,6 @@ username: admin\
 password: pw
 
 
-###account details for snack ###
-username: shraddha55
+### account details for snack ###
+username: shraddha55\
 Password: ECS165PrettyNear
