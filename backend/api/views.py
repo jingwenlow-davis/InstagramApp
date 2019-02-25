@@ -136,7 +136,7 @@ class UpdateSettings(APIView):
 # All Posts
 class PostViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows posts to be viewed or edited.
     """
     queryset = Post.objects.all().order_by('-date_created')
     serializer_class = PostSerializer
@@ -151,9 +151,12 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        # TODO: querry, serialize querry
-        # serializer = serializers.serialize('json', user)
-        return Response(serializer)
+        data = json.loads(request.data)
+        data['user'] = user
+        serializer = PostSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save() 
+        return Response(serializer.data)
 
     @action(detail=False)
     def getfeed(self, request):
@@ -165,9 +168,9 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        # TODO: querry, serialize querry
-        # serializer = serializers.serialize('json', user)
-        return Response(serializer)
+        posts = Post.objects.exclude(user=user)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
     @action(detail=False)
     def getuserposts(self, request):
@@ -180,5 +183,6 @@ class PostViewSet(viewsets.ModelViewSet):
         if user.exists(): user = user.last().user
 
         # TODO: querry, serialize querry
-        # serializer = serializers.serialize('json', user)
-        return Response(serializer)
+        posts = Post.objects.filter(user=user)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)

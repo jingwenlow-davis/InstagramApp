@@ -37,9 +37,9 @@ class User(AbstractUser):
 
 
 class Post(models.Model):
-	"""
+	'''
 	User's posts that appear in feed
-	"""
+	'''
 	posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	
 	date_created = models.DateTimeField(default=datetime.now)
@@ -54,9 +54,9 @@ class Post(models.Model):
 		)
 
 class Like(models.Model):
-	"""
+	'''
 	Likes on posts
-	"""
+	'''
 	post = models.ForeignKey(Post, on_delete=models.CASCADE)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -67,9 +67,9 @@ class Like(models.Model):
 		)
 
 class Message(models.Model):
-	"""
+	'''
 	Messages sent between various users
-	"""
+	'''
 	sent_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
 	received_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
 
@@ -87,9 +87,9 @@ class Message(models.Model):
 		)
 
 class Location(models.Model):
-	"""
+	'''
 	Location of each user  
-	"""
+	'''
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	location_coordinates = models.FloatField(null=True)
@@ -104,9 +104,9 @@ class Location(models.Model):
 
 
 class BlockedUser(models.Model):
-	"""
+	'''
 	User that is blocked by another user
-	"""
+	'''
 	blocker_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="blocker")
 	blocked_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="blocked")
 
@@ -117,9 +117,9 @@ class BlockedUser(models.Model):
 		)
 
 class Report(models.Model):
-	"""
+	'''
 	Reporting of either posts or messages 
-	"""
+	'''
 	target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 	target_id = models.PositiveIntegerField()
 	target_object=GenericForeignKey('target_type', 'target_id')
