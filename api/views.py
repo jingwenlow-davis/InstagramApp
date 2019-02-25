@@ -182,7 +182,6 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        # TODO: querry, serialize querry
         posts = Post.objects.filter(user=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
