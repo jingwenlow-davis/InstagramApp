@@ -94,10 +94,10 @@ DATABASES = {
 import pymysql  # noqa: 402
 pymysql.install_as_MySQLdb()
 if os.getenv('GAE_APPLICATION', None):
-    # Running on production App Engine, so connect to Google Cloud SQL using
-    # the unix socket at /cloudsql/<your-cloudsql-connection string>
-    # import pymysql  # noqa: 402
-    # pymysql.install_as_MySQLdb()
+#     # Running on production App Engine, so connect to Google Cloud SQL using
+#     # the unix socket at /cloudsql/<your-cloudsql-connection string>
+#     # import pymysql  # noqa: 402
+#     # pymysql.install_as_MySQLdb()
 
     DATABASES = {
         'default': {
@@ -118,14 +118,6 @@ else:
 
 
 	DATABASES = {
-        # 'default': {
-        #     'ENGINE': 'django.db.backends.mysql',
-        #     'HOST': '127.0.0.1',
-        #     'PORT': '3306',
-        #     'NAME': '[LOCAL DB NAME]',
-        #     'USER': '[USER]',
-        #     'PASSWORD': '[PASSWORD]',
-        # }
 		'default': {
             'ENGINE': 'django.db.backends.mysql',
 			'NAME': 'pneardb_main',
@@ -135,13 +127,14 @@ else:
             'NAME': 'pneardb_main',
 			'PORT': '3306'
         }
+        # DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
     }
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.sqlite3',
-    #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    #     }
-    # }
+
 
 # [END db_setup]
 

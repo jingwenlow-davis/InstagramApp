@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
 from django.http import HttpResponse, JsonResponse
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, action
@@ -19,6 +21,7 @@ from .models import *
 from .serializers import *
 
 import json
+import base64
 from django.core import serializers
 
 
@@ -48,6 +51,7 @@ class LoginUser(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
+        print(request.body)
         data = json.loads(request.body)
         username = data['username']
         password = data['password']
@@ -56,7 +60,7 @@ class LoginUser(APIView):
             return Response({'error': 'Please provide both username and password'},
                             status=HTTP_400_BAD_REQUEST)
 
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=username, password=password)
 
         # user not found
         if not user:
@@ -66,7 +70,6 @@ class LoginUser(APIView):
         login(request, user)
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key}, status=HTTP_200_OK)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class SignUpUser(APIView):
@@ -101,7 +104,6 @@ class SignUpUser(APIView):
             )
 
             return Response(status=HTTP_200_OK)
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateSettings(APIView):
@@ -140,9 +142,10 @@ class PostViewSet(viewsets.ModelViewSet):
     """
     queryset = Post.objects.all().order_by('-date_created')
     serializer_class = PostSerializer
+    parser_classes = (FormParser, MultiPartParser, JSONParser)
 
-    @action(detail=False)
-    def createpost(self, request):
+    @action(methods=['post'], detail=False)
+    def createpost(self, request, **kwargs):
         '''
         Create current user's post
         '''
@@ -151,13 +154,13 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        data = json.loads(request.data)
-        data['user'] = user
-        serializer = PostSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save() 
-        return Response(serializer.data)
-
+        req = request.data.copy()
+        req['posted_by'] = user.pk
+        serializer = PostSerializer(data=req)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
     @action(detail=False)
     def getfeed(self, request):
         '''
@@ -168,7 +171,7 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        posts = Post.objects.exclude(user=user)
+        posts = Post.objects.exclude(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
@@ -182,6 +185,6 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        posts = Post.objects.filter(user=user)
+        posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)

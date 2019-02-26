@@ -1,11 +1,11 @@
 from django.db import models
+from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from datetime import datetime
 from rest_framework.authtoken.models import Token
 
 # This code is triggered whenever a new user has been created and saved to the database
@@ -21,7 +21,7 @@ class User(AbstractUser):
 	'''
 	display_name = models.CharField(max_length=30, blank=True)
 	location_radius = models.IntegerField(null=True, blank=True)
-	profile_picture = models.CharField(max_length=100, blank=True)
+	profile_picture = models.ImageField(upload_to='staticfiles')
 	bio = models.TextField(max_length=500, blank=True)
 	age_range = models.IntegerField(null=True, blank=True)
 
@@ -42,7 +42,7 @@ class Post(models.Model):
 	'''
 	posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
 	
-	date_created = models.DateTimeField(default=datetime.now)
+	date_created = models.DateTimeField(default=timezone.now)
 	image = models.ImageField(upload_to='staticfiles')
 	caption = models.TextField(max_length=500, blank=False)
 
@@ -74,8 +74,8 @@ class Message(models.Model):
 	received_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
 
 	content = models.TextField(max_length=None, blank=False)
-	time_sent = models.DateTimeField(default=datetime.now())
-	time_received = models.DateTimeField(default=datetime.now())
+	time_sent = models.DateTimeField(default=timezone.now)
+	time_received = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return "{sent_by}, {received_by}, {time_sent}, {time_received}, {content}".format(
@@ -93,7 +93,7 @@ class Location(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 	location_coordinates = models.FloatField(null=True)
-	timestamp = models.DateTimeField(default=datetime.now())
+	timestamp = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return "{sent_by}, {location_coordinates}, {timestamp}".format(

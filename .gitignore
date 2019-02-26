@@ -3,3 +3,4 @@ frontend\node_modules
 *.pyc
 backend\db.sqlite3
 api\migrations
+*.json
