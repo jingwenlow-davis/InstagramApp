@@ -6,3 +6,4 @@ api\migrations
 *.json
 db.sqlite3
 staticfiles/*.png
+re
