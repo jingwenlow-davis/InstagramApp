@@ -35,6 +35,16 @@ class User(AbstractUser):
 	def __str__(self):
 		return self.username
 
+class Hashtag(models.Model):
+	'''
+	Hashtags for posts
+	'''
+	hashtag = models.CharField(max_length=30, blank=True)
+
+	def __str__(self):
+		return "{hashtag}".format(
+			hashtag=self.hashtag
+	)
 
 class Post(models.Model):
 	'''
@@ -45,6 +55,7 @@ class Post(models.Model):
 	date_created = models.DateTimeField(default=timezone.now)
 	image = models.ImageField(upload_to='staticfiles')
 	caption = models.TextField(max_length=500, blank=False)
+	hashtags = models.ManyToManyField(Hashtag)
 
 	def __str__(self):
 		return "{posted_by}, {date_created}, {caption}".format(

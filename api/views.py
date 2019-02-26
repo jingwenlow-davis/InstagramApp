@@ -6,7 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework import generics
 from rest_framework.views import APIView
+from django_filters import rest_framework as filters
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import AllowAny
 from rest_framework.authtoken.models import Token
@@ -143,6 +145,8 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-date_created')
     serializer_class = PostSerializer
     parser_classes = (FormParser, MultiPartParser, JSONParser)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = ('posted_by__username', 'hashtags__hashtag',)
 
     @action(methods=['post'], detail=False)
     def createpost(self, request, **kwargs):
@@ -161,6 +165,7 @@ class PostViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
+
     @action(detail=False)
     def getfeed(self, request):
         '''
@@ -188,3 +193,29 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+# class PostList(generics.ListAPIView):
+#     serializer_class = PostSerializer
+
+#     def get_queryset(self):
+#         '''
+#         Get all posts based on search parameters
+#         '''
+#         queryset = Post.objects.all()
+#         search_params = self.kwargs['username']
+#         if search_params[0] == '#':
+#             posts = queryset.filter(hashtag=search_params)
+#         else:
+#             print('we are here')
+#             user = User.objects.filter(username=str(search_params))
+#             print("user", user)
+#             posts = Post.objects.filter(posted_by=user[0])
+#             print("posts", posts)
+#         serializer = PostSerializer(posts, many=True)
+#         return Response(serializer.data)
+
+    # @action(detail=False)
+    # def search(self, request):
+    #     posts = Post.objects.all()
+    #     post_filter = PostFilter(request.GET, queryset=posts)
+    #     return(post_filter)

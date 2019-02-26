@@ -117,21 +117,21 @@ else:
     # See https://cloud.google.com/sql/docs/mysql-connect-proxy
 
 
-	DATABASES = {
-		'default': {
-            'ENGINE': 'django.db.backends.mysql',
-			'NAME': 'pneardb_main',
-            'HOST': 'localhost',
-            'USER': 'django',
-            'PASSWORD': 'unchained',
-            'NAME': 'pneardb_main',
-			'PORT': '3306'
-        }
-        # DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
+	# DATABASES = {
+	# 	'default': {
+ #            'ENGINE': 'django.db.backends.mysql',
+	# 		'NAME': 'pneardb_main',
+ #            'HOST': 'localhost',
+ #            'USER': 'django',
+ #            'PASSWORD': 'unchained',
+ #            'NAME': 'pneardb_main',
+	# 		'PORT': '3306'
+ #        }
+        DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 # }
     }
 
