@@ -154,7 +154,6 @@ class LikeViewSet(viewsets.ModelViewSet):
         return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 # All Posts
 class PostViewSet(viewsets.ModelViewSet):
     """
@@ -165,6 +164,11 @@ class PostViewSet(viewsets.ModelViewSet):
     parser_classes = (FormParser, MultiPartParser, JSONParser)
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('posted_by__username', 'hashtags__hashtag',)
+
+    # def get_queryset(self):
+    #     username = self.request.query_params.get('posted_by__username', None)
+    #     serializer = PostSerializer(Post.objects.filter(posted_by__username=username))
+    #     return serializer.data 
 
     @action(methods=['post'], detail=False)
     def createpost(self, request, **kwargs):

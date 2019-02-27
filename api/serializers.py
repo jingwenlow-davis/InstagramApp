@@ -62,8 +62,15 @@ class UserSerializer(serializers.ModelSerializer):
             'user_permissions'
         )
 
+class HashtagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hashtag
+        fields = ('__all__')
+
 class PostSerializer(serializers.ModelSerializer):
     # image = Base64ImageField(required=False) 
+    posted_by = UserSerializer(required=True)
+    hashtags = HashtagSerializer(required=True, many=True)
     class Meta:
         model = Post
         exclude = (
@@ -74,9 +81,12 @@ class PostSerializer(serializers.ModelSerializer):
         image = validated_data.pop('image')
         posted_by = validated_data.pop('posted_by')
         caption = validated_data.pop('caption')
-        return Post.objects.create(image=image, posted_by=posted_by, caption=caption)
+        hashtags = validated_data.pop('hashtags')
+        return Post.objects.create(hasthags=hashtags, image=image, posted_by=posted_by, caption=caption)
 
 class LikeSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+    post = PostSerializer(required=True) 
     class Meta:
         model = Like
         fields = ('__all__')
