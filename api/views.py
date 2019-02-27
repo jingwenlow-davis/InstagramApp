@@ -166,6 +166,16 @@ class PostViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filter_fields = ('posted_by__username', 'hashtags__hashtag',)
 
+    @action(methods=['get'], detail=False)
+    def allposts(self, request, **kwargs):
+
+        serializer = PostSerializer(data=Post.objects.all())
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     @action(methods=['post'], detail=False)
     def createpost(self, request, **kwargs):
         '''
