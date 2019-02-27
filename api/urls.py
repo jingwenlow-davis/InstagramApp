@@ -20,6 +20,7 @@ from .views import *
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, 'users')
 router.register(r'posts', PostViewSet, 'posts')
+router.register(r'likes', LikeViewSet, 'likes')
 
 urlpatterns = [
     path('', include(router.urls)),

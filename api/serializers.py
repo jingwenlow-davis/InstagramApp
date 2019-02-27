@@ -71,7 +71,6 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        print('we are in creation')
         image = validated_data.pop('image')
         posted_by = validated_data.pop('posted_by')
         caption = validated_data.pop('caption')
@@ -81,6 +80,12 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ('__all__')
+
+    def create(self, validated_data):
+        user = validated_data.pop('user')
+        post = validated_data.pop('post')
+        return Like.objects.create(user=user, post=post)
+
 
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:

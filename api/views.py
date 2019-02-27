@@ -134,6 +134,24 @@ class UpdateSettings(APIView):
         return Response(status=HTTP_200_OK)
 
 
+class LikeViewSet(viewsets.ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    parser_classes = (FormParser, MultiPartParser, JSONParser)
+
+    @action(methods=['post'], detail=False)
+    def likepost(self, request, **kwargs):
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        req = request.data.copy()
+        req['user'] = user.pk
+        serializer = LikeSerializer(data=req)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -193,29 +211,3 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-
-# class PostList(generics.ListAPIView):
-#     serializer_class = PostSerializer
-
-#     def get_queryset(self):
-#         '''
-#         Get all posts based on search parameters
-#         '''
-#         queryset = Post.objects.all()
-#         search_params = self.kwargs['username']
-#         if search_params[0] == '#':
-#             posts = queryset.filter(hashtag=search_params)
-#         else:
-#             print('we are here')
-#             user = User.objects.filter(username=str(search_params))
-#             print("user", user)
-#             posts = Post.objects.filter(posted_by=user[0])
-#             print("posts", posts)
-#         serializer = PostSerializer(posts, many=True)
-#         return Response(serializer.data)
-
-    # @action(detail=False)
-    # def search(self, request):
-    #     posts = Post.objects.all()
-    #     post_filter = PostFilter(request.GET, queryset=posts)
-    #     return(post_filter)
