@@ -21,7 +21,7 @@ class User(AbstractUser):
 	'''
 	display_name = models.CharField(max_length=30, blank=True)
 	location_radius = models.IntegerField(null=True, blank=True)
-	profile_picture = models.ImageField(upload_to='staticfiles')
+	profile_picture = models.ImageField(upload_to='profile')
 	bio = models.TextField(max_length=500, blank=True)
 	age_range = models.IntegerField(null=True, blank=True)
 
@@ -51,11 +51,11 @@ class Post(models.Model):
 	User's posts that appear in feed
 	'''
 	posted_by = models.ForeignKey(User, on_delete=models.CASCADE)
-	
+
 	date_created = models.DateTimeField(default=timezone.now)
-	image = models.ImageField(upload_to='staticfiles')
+	image = models.ImageField(upload_to='post')
 	caption = models.TextField(max_length=500, blank=False)
-	hashtags = models.ManyToManyField(Hashtag)
+	hashtags = models.ManyToManyField(Hashtag, blank=True)
 
 	def __str__(self):
 		return "{posted_by}, {date_created}, {caption}".format(
@@ -99,7 +99,7 @@ class Message(models.Model):
 
 class Location(models.Model):
 	'''
-	Location of each user  
+	Location of each user
 	'''
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -129,7 +129,7 @@ class BlockedUser(models.Model):
 
 class Report(models.Model):
 	'''
-	Reporting of either posts or messages 
+	Reporting of either posts or messages
 	'''
 	target_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
 	target_id = models.PositiveIntegerField()

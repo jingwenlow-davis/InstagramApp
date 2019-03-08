@@ -68,7 +68,7 @@ class HashtagSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class PostSerializer(serializers.ModelSerializer):
-    # image = Base64ImageField(required=False) 
+    # image = Base64ImageField(required=False)
     posted_by = UserSerializer(required=True)
     hashtags = HashtagSerializer(required=True, many=True)
     class Meta:
@@ -78,15 +78,16 @@ class PostSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
+        print(validated_data)
         image = validated_data.pop('image')
         posted_by = validated_data.pop('posted_by')
         caption = validated_data.pop('caption')
         hashtags = validated_data.pop('hashtags')
-        return Post.objects.create(hasthags=hashtags, image=image, posted_by=posted_by, caption=caption)
+        return Post.objects.create(hashtags=hashtags, image=image, posted_by=posted_by, caption=caption)
 
 class LikeSerializer(serializers.ModelSerializer):
     user = UserSerializer(required=True)
-    post = PostSerializer(required=True) 
+    post = PostSerializer(required=True)
     class Meta:
         model = Like
         fields = ('__all__')

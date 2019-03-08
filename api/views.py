@@ -78,7 +78,11 @@ class SignUpUser(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        data = json.loads(request.body)
+        print(type(request.body.decode('utf-8')))
+        rawData = request.body.decode('utf-8')
+
+        data = json.loads(rawData)
+        print(data)
         email = data['email']
         first_name = data['first_name']
         last_name = data['last_name']
@@ -173,21 +177,45 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=False)
     def createpost(self, request, **kwargs):
-        '''
-        Create current user's post
-        '''
-        # find current user based on token
-        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
-        user = Token.objects.filter(key=userToken)
-        if user.exists(): user = user.last().user
+            '''
+            Create current user's post
+            '''
+            # find current user based on token
+            userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+            user = Token.objects.filter(key=userToken)
+            if user.exists(): user = user.last().user
 
-        req = request.data.copy()
-        req['posted_by'] = user.pk
-        serializer = PostSerializer(data=req)
-        if serializer.is_valid():
-            serializer.save()
+            req = request.data.copy()
+            req['posted_by'] = user
+            print(req)
+            try:
+                post = Post(caption=req['caption'], posted_by=user, image=req['image'])
+                post.hashtags.set(req['hashtags'])
+                post.save()
+            except(KeyError):
+                post = Post(caption=req['caption'], posted_by=user, image=req['image'])
+                post.save()
+            serializer = PostSerializer(post)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def createpost(self, request, **kwargs):
+    #     '''
+    #     Create current user's post
+    #     '''
+    #     # find current user based on token
+    #     userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+    #     user = Token.objects.filter(key=userToken)
+    #     if user.exists(): user = user.last().user
+    #
+    #     req = request.data.copy()
+    #     req['posted_by'] = user.pk
+    #     print(req)
+    #     serializer = PostSerializer(data=req)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False)
     def getfeed(self, request):
