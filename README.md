@@ -40,6 +40,24 @@ set up database (do this whenever changes made to model)
 python manage.py makemigrations
 python manage.py migrate
 ```
+
+#### Expose local server
+Download local tunnel
+```
+npm install -g localtunnel
+```
+Expose port 8000
+```
+lt --port 8000
+```
+It will generate a random url.
+Now in the snack, in file `App.js` find the line:
+```
+export const url = "https://bright-seahorse-27.localtunnel.me";
+```
+Replace that url with yours. And you should be good.
+The local tunnel sometimes randomly stops. So if you suddenly get errors, first thing to do is check that it is still running. If it stopped, you have to generate a new url.
+
 #### Admin
 username: admin\
 password: pw
@@ -154,7 +172,7 @@ sample output:
 For searching posts by username
 ```
 method = GET
-sample url = https://pretty-near-ecs-165a.appspot.com/api/posts/?posted_by__username=rishi 
+sample url = https://pretty-near-ecs-165a.appspot.com/api/posts/?posted_by__username=rishi
 //set ?posted_by__username to which user you search for
 sample output:
 [ //list of user of username rishi posts
@@ -174,7 +192,7 @@ sample output:
 For searching posts by hashtag
 ```
 method = GET
-sample url = https://pretty-near-ecs-165a.appspot.com/api/posts/?hashtags__hashtag=%23lit 
+sample url = https://pretty-near-ecs-165a.appspot.com/api/posts/?hashtags__hashtag=%23lit
 //set ?hashtags__hashtag to which hashtag you want to search for
 //%23 is used to encode '#'
 sample output:
