@@ -244,3 +244,57 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+
+# All Posts
+class MessageViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that deals with messaging
+    """
+    # queryset = 
+    # serializer_class =
+
+    @action(detail=False)
+    def sendmessage(self, request):
+        '''
+        User sends a message to another user
+        '''
+        # TODO
+        pass
+
+    @action(detail=False)
+    def getusersmessaged(self, request):
+        '''
+        Get users that user already has conversations with
+        '''
+        # TODO
+        pass
+
+    @action(detail=False)
+    def getmessages(self, request):
+        '''
+        Get messages between two users
+        '''
+        # TODO
+        '''
+        @Rishi
+        Try to return a response that looks like this:
+        [
+            {
+                _id: (not important)
+                timestamp: (latest first)
+                text: (message content)
+                user: {
+                  _id: (not important)
+                  name: (username)
+                }
+            },
+            {
+                (next post)
+            },
+            ...
+        ]
+        '''
+
+        pass
