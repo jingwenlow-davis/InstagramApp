@@ -1,12 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework import generics
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 from rest_framework.decorators import api_view, permission_classes, action
@@ -296,7 +294,6 @@ class MessageViewSet(viewsets.ModelViewSet):
         '''
         Get messages between two users
         '''
-        # TODO
         userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
