@@ -265,7 +265,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['sent_by'] = user
-        message = Message(sent_by=user, received_by=User.objects.get(pk=req['received_by']), content=req['content'], time_sent=datetime.now(), time_received=datetime.now())
+        message = Message(sent_by=user, received_by=User.objects.get(username=req['received_by']), content=req['content'], time_sent=datetime.now(), time_received=datetime.now())
         message.save()
 
         serializer = MessageSerializer(message)  
@@ -300,7 +300,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['sent_by'] = user
-        messages = Message.objects.filter(sent_by=user).order_by('time_sent')
+        messages = Message.objects.filter(sent_by=user, received_by=User.objects.get(username=req['received_by'])).order_by('-time_sent')
 
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
