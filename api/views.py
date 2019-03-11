@@ -1,12 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.core import serializers
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework import generics
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 from django_filters import rest_framework as filters
 from rest_framework.decorators import api_view, permission_classes, action
@@ -252,8 +250,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that deals with messaging
     """
-    # queryset = 
-    # serializer_class =
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
 
     @action(detail=False)
     def sendmessage(self, request):
@@ -282,13 +280,10 @@ class MessageViewSet(viewsets.ModelViewSet):
         Try to return a response that looks like this:
         [
             {
-                _id: (not important)
-                timestamp: (latest first)
-                text: (message content)
-                user: {
-                  _id: (not important)
-                  name: (username)
-                }
+                _id: (not important),
+                timestamp: (latest first),
+                text: (message content),
+                user: (username),
             },
             {
                 (next post)
