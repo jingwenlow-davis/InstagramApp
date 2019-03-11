@@ -99,6 +99,8 @@ class LikeSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    sent_by = UserSerializer(required=True)
+    received_by = UserSerializer(required=True)
     class Meta:
         model = Message
         fields = ('__all__')

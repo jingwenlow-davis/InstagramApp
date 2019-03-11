@@ -21,6 +21,7 @@ router = routers.DefaultRouter()
 router.register(r'users', UserViewSet, 'users')
 router.register(r'posts', PostViewSet, 'posts')
 router.register(r'likes', LikeViewSet, 'likes')
+router.register(r'messages', MessageViewSet, 'messages')
 
 urlpatterns = [
     path('', include(router.urls)),

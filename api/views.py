@@ -24,6 +24,7 @@ from .serializers import *
 
 import json
 import base64
+from datetime import datetime
 from django.core import serializers
 
 
@@ -177,27 +178,27 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=False)
     def createpost(self, request, **kwargs):
-            '''
-            Create current user's post
-            '''
-            # find current user based on token
-            userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
-            user = Token.objects.filter(key=userToken)
-            if user.exists(): user = user.last().user
+        '''
+        Create current user's post
+        '''
+        # find current user based on token
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
 
-            req = request.data.copy()
-            req['posted_by'] = user
-            print(req)
-            try:
-                post = Post(caption=req['caption'], posted_by=user, image=req['image'])
-                post.hashtags.set(req['hashtags'])
-                post.save()
-            except(KeyError):
-                post = Post(caption=req['caption'], posted_by=user, image=req['image'])
-                post.save()
-            serializer = PostSerializer(post)
+        req = request.data.copy()
+        req['posted_by'] = user
+        print(req)
+        try:
+            post = Post(caption=req['caption'], posted_by=user, image=req['image'])
+            post.hashtags.set(req['hashtags'])
+            post.save()
+        except(KeyError):
+            post = Post(caption=req['caption'], posted_by=user, image=req['image'])
+            post.save()
+        serializer = PostSerializer(post)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # def createpost(self, request, **kwargs):
     #     '''
@@ -252,24 +253,43 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     API endpoint that deals with messaging
     """
-    # queryset = 
-    # serializer_class =
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
 
-    @action(detail=False)
+    @action(methods=['post'], detail=False)
     def sendmessage(self, request):
         '''
         User sends a message to another user
         '''
-        # TODO
-        pass
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        req = request.data.copy()
+        req['sent_by'] = user
+        message = Message(sent_by=user, received_by=User.objects.get(pk=req['received_by']), content=req['content'], time_sent=datetime.now(), time_received=datetime.now())
+        message.save()
+
+        serializer = MessageSerializer(message)  
+        return Response(serializer.data)     
+ 
 
     @action(detail=False)
     def getusersmessaged(self, request):
         '''
         Get users that user already has conversations with
         '''
-        # TODO
-        pass
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
+
+        req = request.data.copy()
+        req['sent_by'] = user
+        messages = Message.objects.filter(sent_by=user).values_list('received_by', flat=True)  
+        users = User.objects.filter(pk__in=messages)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
 
     @action(detail=False)
     def getmessages(self, request):
@@ -277,24 +297,13 @@ class MessageViewSet(viewsets.ModelViewSet):
         Get messages between two users
         '''
         # TODO
-        '''
-        @Rishi
-        Try to return a response that looks like this:
-        [
-            {
-                _id: (not important)
-                timestamp: (latest first)
-                text: (message content)
-                user: {
-                  _id: (not important)
-                  name: (username)
-                }
-            },
-            {
-                (next post)
-            },
-            ...
-        ]
-        '''
+        userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
+        user = Token.objects.filter(key=userToken)
+        if user.exists(): user = user.last().user
 
-        pass
+        req = request.data.copy()
+        req['sent_by'] = user
+        messages = Message.objects.filter(sent_by=user).order_by('time_sent')
+
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
