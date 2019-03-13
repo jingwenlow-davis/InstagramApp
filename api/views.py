@@ -187,11 +187,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['posted_by'] = user
-        print(req)
+        hashtags = []
         try:
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
-            post.hashtags.set(req['hashtags'])
             post.save()
+            for i in req['hashtags'].split(): 
+                hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+            post.hashtags.set(hashtags)
         except(KeyError):
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
             post.save()
@@ -228,6 +230,16 @@ class PostViewSet(viewsets.ModelViewSet):
         if user.exists(): user = user.last().user
 
         posts = Post.objects.all().order_by('-date_created')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def gethashtaggedposts(self, request):
+        '''
+        Gets posts with specific hashtag
+        '''
+
+        posts = Post.objects.filter(hashtags__hashtag=request['hashtag'])
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
