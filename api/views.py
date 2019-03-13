@@ -19,6 +19,7 @@ from rest_framework.status import (
 
 from .models import *
 from .serializers import *
+from .utils import *
 
 import json
 import base64
@@ -300,7 +301,11 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['sent_by'] = user
-        messages = Message.objects.filter(sent_by=user, received_by=User.objects.get(username=req['received_by'])).order_by('-time_sent')
+        received_by = User.objects.get(username=req['received_by'])
+        sender_messages = Message.objects.filter(sent_by=user).order_by('-time_sent')
+        recipient_messages = Message.objects.filter(sent_by=received_by).order_by('-time_sent')
+        messages = sender_messages | recipient_messages 
 
         serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data)
+        data = message_formatter(serializer.data)
+        return Response(data)
