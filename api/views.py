@@ -270,7 +270,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         message.save()
 
         serializer = MessageSerializer(message)
-        return Response(serializer.data)
+        data = message_formatter(serializer.data)
+        return Response(data, status=HTTP_200_OK)
 
 
     @action(detail=False)
@@ -304,8 +305,9 @@ class MessageViewSet(viewsets.ModelViewSet):
         received_by = User.objects.get(username=req['received_by'])
         sender_messages = Message.objects.filter(sent_by=user).order_by('-time_sent')
         recipient_messages = Message.objects.filter(sent_by=received_by).order_by('-time_sent')
-        messages = sender_messages | recipient_messages 
+        messages = sender_messages | recipient_messages
 
         serializer = MessageSerializer(messages, many=True)
-        data = message_formatter(serializer.data)
+        data = messages_formatter(serializer.data)
         return Response(data)
+        # return Response(serializer.data)
