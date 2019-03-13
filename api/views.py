@@ -250,6 +250,19 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False)
+    def getspecificuser(self, request):
+        '''
+        Gets posts of specific user
+        '''
+        req = request.data.copy()
+        user = User.objects.get(username=req['user'])
+
+        posts = Post.objects.filter(posted_by=user).order_by('-date_created')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
+    @action(detail=False)
     def getuserposts(self, request):
         '''
         Get all current user's posts
@@ -262,8 +275,6 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-
-
 
 # All Posts
 class MessageViewSet(viewsets.ModelViewSet):
