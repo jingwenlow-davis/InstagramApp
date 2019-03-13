@@ -227,7 +227,7 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        posts = Post.objects.exclude(posted_by=user)
+        posts = Post.objects.all().order_by('-date_created')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
