@@ -25,6 +25,7 @@ import json
 import base64
 from datetime import datetime
 from django.core import serializers
+from django.db.models import Count 
 
 
 # All Users
@@ -187,11 +188,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['posted_by'] = user
-        print(req)
+        hashtags = []
         try:
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
-            post.hashtags.set(req['hashtags'])
             post.save()
+            for i in req['hashtags'].split(): 
+                hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+            post.hashtags.set(hashtags)
         except(KeyError):
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
             post.save()
@@ -227,9 +230,37 @@ class PostViewSet(viewsets.ModelViewSet):
         user = Token.objects.filter(key=userToken)
         if user.exists(): user = user.last().user
 
-        posts = Post.objects.exclude(posted_by=user)
+        posts = Post.objects.all().order_by('-date_created')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+    @action(detail=False)
+    def gethashtaggedposts(self, request):
+        '''
+        Gets posts with specific hashtag
+        '''
+        req = request.data.copy()
+        hashtags = []
+        for i in req['hashtags'].split(): 
+            hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+        query = Post.objects.annotate(count=Count('hashtags')).filter(count__gte=len(hashtags))
+        for i in hashtags:
+            query = query.filter(hashtags__pk=i)
+        serializer = PostSerializer(query.order_by('-date_created'), many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def getspecificuser(self, request):
+        '''
+        Gets posts of specific user
+        '''
+        req = request.data.copy()
+        user = User.objects.get(username=req['user'])
+
+        posts = Post.objects.filter(posted_by=user).order_by('-date_created')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
 
     @action(detail=False)
     def getuserposts(self, request):
@@ -244,8 +275,6 @@ class PostViewSet(viewsets.ModelViewSet):
         posts = Post.objects.filter(posted_by=user)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-
-
 
 # All Posts
 class MessageViewSet(viewsets.ModelViewSet):
