@@ -268,9 +268,9 @@ class MessageViewSet(viewsets.ModelViewSet):
         message = Message(sent_by=user, received_by=User.objects.get(username=req['received_by']), content=req['content'], time_sent=datetime.now(), time_received=datetime.now())
         message.save()
 
-        serializer = MessageSerializer(message)  
-        return Response(serializer.data)     
- 
+        serializer = MessageSerializer(message)
+        return Response(serializer.data)
+
 
     @action(detail=False)
     def getusersmessaged(self, request):
@@ -283,13 +283,13 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         req = request.data.copy()
         req['sent_by'] = user
-        messages = Message.objects.filter(sent_by=user).values_list('received_by', flat=True)  
+        messages = Message.objects.filter(sent_by=user).values_list('received_by', flat=True)
         users = User.objects.filter(pk__in=messages)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
 
-    @action(detail=False)
+    @action(methods=['post'], detail=False)
     def getmessages(self, request):
         '''
         Get messages between two users
