@@ -25,6 +25,7 @@ import json
 import base64
 from datetime import datetime
 from django.core import serializers
+from django.db.models import Count 
 
 
 # All Users
@@ -238,9 +239,14 @@ class PostViewSet(viewsets.ModelViewSet):
         '''
         Gets posts with specific hashtag
         '''
-
-        posts = Post.objects.filter(hashtags__hashtag=request['hashtag'])
-        serializer = PostSerializer(posts, many=True)
+        req = request.data.copy()
+        hashtags = []
+        for i in req['hashtags'].split(): 
+            hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+        query = Post.objects.annotate(count=Count('hashtags')).filter(count__gte=len(hashtags))
+        for i in hashtags:
+            query = query.filter(hashtags__pk=i)
+        serializer = PostSerializer(query.order_by('-date_created'), many=True)
         return Response(serializer.data)
 
     @action(detail=False)
