@@ -189,11 +189,13 @@ class PostViewSet(viewsets.ModelViewSet):
         req = request.data.copy()
         req['posted_by'] = user
         hashtags = []
+
         try:
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
             post.save()
             for i in req['hashtags'].split():
-                hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+                hashtag, created = Hashtag.objects.get_or_create(hashtag=i)
+                hashtags.append(hashtag.pk)
             post.hashtags.set(hashtags)
         except(KeyError):
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
