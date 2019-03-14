@@ -25,7 +25,7 @@ import json
 import base64
 from datetime import datetime
 from django.core import serializers
-from django.db.models import Count 
+from django.db.models import Count
 
 
 # All Users
@@ -225,7 +225,7 @@ class PostViewSet(viewsets.ModelViewSet):
         '''
         req = request.data.copy()
         hashtags = []
-        for i in req['hashtags'].split(): 
+        for i in req['hashtags'].split():
             hashtags.append(Hashtag.objects.get(hashtag=i).pk)
         query = Post.objects.annotate(count=Count('hashtags')).filter(count__gte=len(hashtags))
         for i in hashtags:
@@ -283,7 +283,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         message.save()
 
         serializer = MessageSerializer(message)
-        return Response(serializer.data)
+        data = message_formatter(serializer.data)
+        return Response(data, status=HTTP_200_OK)
 
 
     @action(detail=False)
@@ -315,10 +316,11 @@ class MessageViewSet(viewsets.ModelViewSet):
         req = request.data.copy()
         req['sent_by'] = user
         received_by = User.objects.get(username=req['received_by'])
-        sender_messages = Message.objects.filter(sent_by=user).order_by('-time_sent')
-        recipient_messages = Message.objects.filter(sent_by=received_by).order_by('-time_sent')
-        messages = sender_messages | recipient_messages 
+        sender_messages = Message.objects.filter(sent_by=user, received_by=received_by).order_by('-time_sent')
+        recipient_messages = Message.objects.filter(sent_by=received_by, received_by=user).order_by('-time_sent')
+        messages = sender_messages | recipient_messages
 
         serializer = MessageSerializer(messages, many=True)
-        data = message_formatter(serializer.data)
+        data = messages_formatter(serializer.data)
         return Response(data)
+        # return Response(serializer.data)
