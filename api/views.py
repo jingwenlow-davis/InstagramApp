@@ -189,11 +189,13 @@ class PostViewSet(viewsets.ModelViewSet):
         req = request.data.copy()
         req['posted_by'] = user
         hashtags = []
+
         try:
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
             post.save()
-            for i in req['hashtags'].split(): 
-                hashtags.append(Hashtag.objects.get(hashtag=i).pk)
+            for i in req['hashtags'].split():
+                hashtag, created = Hashtag.objects.get_or_create(hashtag=i)
+                hashtags.append(hashtag.pk)
             post.hashtags.set(hashtags)
         except(KeyError):
             post = Post(caption=req['caption'], posted_by=user, image=req['image'])
@@ -201,24 +203,6 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer = PostSerializer(post)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    # def createpost(self, request, **kwargs):
-    #     '''
-    #     Create current user's post
-    #     '''
-    #     # find current user based on token
-    #     userToken = request.META.get('HTTP_AUTHORIZATION').split()[1]
-    #     user = Token.objects.filter(key=userToken)
-    #     if user.exists(): user = user.last().user
-    #
-    #     req = request.data.copy()
-    #     req['posted_by'] = user.pk
-    #     print(req)
-    #     serializer = PostSerializer(data=req)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer._errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False)
     def getfeed(self, request):
